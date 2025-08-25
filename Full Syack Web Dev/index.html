@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Admission Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #f4f7fa;
+      font-family: 'Open Sans', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 450px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 36px 32px 28px 32px;
+    }
+    .form-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 28px;
+      color: #222;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 7px;
+      color: #444;
+      font-size: 1.05rem;
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 7px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+      background: #fafbfc;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="date"]:focus,
+    select:focus {
+      border-color: #2563eb;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+    }
+    .checkbox-group label {
+      font-weight: 400;
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 0;
+    }
+    .checkbox-group a {
+      color: #2563eb;
+      text-decoration: none;
+      margin-left: 2px;
+      font-size: 1rem;
+    }
+    .submit-btn {
+      width: 100%;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 12px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .submit-btn:hover {
+      background: #1749b1;
+    }
+    .error {
+      color: #e11d48;
+      font-size: 0.97rem;
+      margin-top: 3px;
+      margin-bottom: 0;
+      min-height: 18px;
+    }
+    @media (max-width: 500px) {
+      .container {
+        padding: 18px 6vw 18px 6vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-title">Student Admission Form</div>
+    <form id="admissionForm" novalidate>
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Enter your name" required />
+        <div class="error" id="fullNameError"></div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="abc@example.com" required />
+        <div class="error" id="emailError"></div>
+      </div>
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dob" required />
+        <div class="error" id="dobError"></div>
+      </div>
+      <div class="form-group">
+        <label for="course">Select Course</label>
+        <select id="course" name="course" required>
+          <option value="">-- Please Select --</option>
+          <option value="B.Tech">B.Tech</option>
+          <option value="B.Sc">B.Sc</option>
+          <option value="B.Com">B.Com</option>
+          <option value="B.A">B.A</option>
+          <option value="M.Tech">M.Tech</option>
+          <option value="M.Sc">M.Sc</option>
+        </select>
+        <div class="error" id="courseError"></div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms" name="terms" />
+        <label for="terms">I agree to the <a href="#" tabindex="-1">terms and conditions</a></label>
+      </div>
+      <div class="error" id="termsError"></div>
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+  </div>
+  <script>
+    const form = document.getElementById('admissionForm');
+    const fullName = document.getElementById('fullName');
+    const email = document.getElementById('email');
+    const dob = document.getElementById('dob');
+    const course = document.getElementById('course');
+    const terms = document.getElementById('terms');
+
+    const fullNameError = document.getElementById('fullNameError');
+    const emailError = document.getElementById('emailError');
+    const dobError = document.getElementById('dobError');
+    const courseError = document.getElementById('courseError');
+    const termsError = document.getElementById('termsError');
+
+    function validateEmail(email) {
+      // Simple email regex
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validateDOB(dateString) {
+      if (!dateString) return false;
+      const dobDate = new Date(dateString);
+      const today = new Date();
+      // Must be at least 10 years old
+      const minAge = 10;
+      const age = today.getFullYear() - dobDate.getFullYear();
+      if (
+        age < minAge ||
+        dobDate > today ||
+        dobDate.getFullYear() < 1900
+      ) {
+        return false;
+      }
+      return true;
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      let valid = true;
+
+      // Full Name
+      if (!fullName.value.trim()) {
+        fullNameError.textContent = 'Full Name is required.';
+        valid = false;
+      } else {
+        fullNameError.textContent = '';
+      }
+
+      // Email
+      if (!email.value.trim()) {
+        emailError.textContent = 'Email is required.';
+        valid = false;
+      } else if (!validateEmail(email.value.trim())) {
+        emailError.textContent = 'Enter a valid email address.';
+        valid = false;
+      } else {
+        emailError.textContent = '';
+      }
+
+      // Date of Birth
+      if (!dob.value) {
+        dobError.textContent = 'Date of Birth is required.';
+        valid = false;
+      } else if (!validateDOB(dob.value)) {
+        dobError.textContent = 'Enter a valid date (at least 10 years old).';
+        valid = false;
+      } else {
+        dobError.textContent = '';
+      }
+
+      // Course
+      if (!course.value) {
+        courseError.textContent = 'Please select a course.';
+        valid = false;
+      } else {
+        courseError.textContent = '';
+      }
+
+      // Terms
+      if (!terms.checked) {
+        termsError.textContent = 'You must agree to the terms.';
+        valid = false;
+      } else {
+        termsError.textContent = '';
+      }
+
+      if (valid) {
+        alert('Form submitted successfully!');
+        form.reset();
+        // Optionally clear errors
+        fullNameError.textContent = '';
+        emailError.textContent = '';
+        dobError.textContent = '';
+        courseError.textContent = '';
+        termsError.textContent = '';
+      }
+    });
+  </script>
+</body>
+</html>
